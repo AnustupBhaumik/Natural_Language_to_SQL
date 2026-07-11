@@ -1,0 +1,60 @@
+{
+  "customers": {
+    "description": "One row per registered customer/account. Used for questions about who bought things, customer segments, or geography.",
+    "synonyms": ["clients", "users", "accounts", "buyers"],
+    "columns": {
+      "customer_id": "Unique identifier for a customer. Join key to orders.customer_id.",
+      "full_name": "Customer's full display name.",
+      "email": "Customer's contact email, unique per customer.",
+      "signup_date": "Date (YYYY-MM-DD) the customer created their account.",
+      "country": "Customer's billing country.",
+      "segment": "Business segment the customer belongs to: 'retail' (individual buyers) or 'enterprise' (business accounts). 'Key accounts' or 'VIP' in business speak usually means segment = 'enterprise'."
+    },
+    "business_rules": [
+      "'New customers' typically means signup_date within the last 90 days relative to the latest order_date in the data.",
+      "'Enterprise customers' and 'key accounts' both map to segment = 'enterprise'."
+    ]
+  },
+  "products": {
+    "description": "Product catalog. Used for questions about pricing, categories, or inventory/stock levels.",
+    "synonyms": ["items", "catalog", "SKUs", "merchandise"],
+    "columns": {
+      "product_id": "Unique identifier for a product. Join key to order_items.product_id.",
+      "product_name": "Human readable product name.",
+      "category": "Product category, e.g. Electronics, Furniture, Stationery.",
+      "unit_price": "Current list price per unit, in USD.",
+      "in_stock": "Units currently available in inventory. 'Out of stock' means in_stock = 0; 'low stock' means in_stock < 30."
+    },
+    "business_rules": [
+      "'Best sellers' means highest total quantity sold via order_items, not highest unit_price."
+    ]
+  },
+  "orders": {
+    "description": "One row per customer order (a shopping cart checkout event). Used for questions about revenue, order counts, order status, or trends over time.",
+    "synonyms": ["purchases", "transactions", "sales"],
+    "columns": {
+      "order_id": "Unique identifier for an order. Join key to order_items.order_id.",
+      "customer_id": "The customer who placed the order. Foreign key to customers.customer_id.",
+      "order_date": "Date (YYYY-MM-DD) the order was placed.",
+      "status": "Order lifecycle status: 'pending', 'completed', or 'cancelled'."
+    },
+    "business_rules": [
+      "'Revenue' and 'sales' should only include orders with status = 'completed' unless the question explicitly asks about pending or cancelled orders too.",
+      "'Order value' or 'order total' = SUM(order_items.quantity * order_items.unit_price) for that order_id."
+    ]
+  },
+  "order_items": {
+    "description": "Line items within an order — one row per distinct product within an order, with the quantity and price paid at that time. This is the primary table for revenue and quantity calculations.",
+    "synonyms": ["line items", "cart items", "purchased products"],
+    "columns": {
+      "order_item_id": "Unique identifier for the line item.",
+      "order_id": "The order this line item belongs to. Foreign key to orders.order_id.",
+      "product_id": "The product purchased in this line item. Foreign key to products.product_id.",
+      "quantity": "Number of units of the product purchased in this line item.",
+      "unit_price": "Price per unit at the time of purchase (may differ from the product's current unit_price)."
+    },
+    "business_rules": [
+      "Always use order_items.unit_price (price paid at purchase time) for revenue calculations, not products.unit_price (current list price), unless the question is explicitly about current pricing."
+    ]
+  }
+}

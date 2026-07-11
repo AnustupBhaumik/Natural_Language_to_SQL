@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text-to-SQL · Llama</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">◆</span>
+        <span class="brand-name">Text‑to‑SQL</span>
+        <span class="brand-tag">powered by Llama</span>
+      </div>
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="ask">Ask</button>
+        <button class="tab-btn" data-tab="schema">Schema</button>
+        <button class="tab-btn" data-tab="history">History</button>
+      </nav>
+    </header>
+
+    <main class="content">
+
+      <!-- ASK TAB -->
+      <section id="tab-ask" class="tab-panel active">
+        <div class="ask-card">
+          <textarea id="question-input" rows="2"
+            placeholder="Ask a question about your data, e.g. “What is our total revenue from completed orders?”"></textarea>
+          <div class="ask-row">
+            <div class="examples">
+              <button class="chip" data-q="What is the total revenue from completed orders?">Total revenue</button>
+              <button class="chip" data-q="Top 5 best selling products by quantity">Top products</button>
+              <button class="chip" data-q="How many enterprise customers per country?">Customers by country</button>
+              <button class="chip" data-q="Which products are low on stock?">Low stock</button>
+            </div>
+            <button id="ask-btn" class="primary-btn">
+              <span class="btn-label">Generate</span>
+              <span class="spinner hidden"></span>
+            </button>
+          </div>
+        </div>
+
+        <div id="error-box" class="error-box hidden"></div>
+
+        <div id="result" class="result hidden">
+          <div class="result-grid">
+            <div class="result-main">
+              <div class="panel">
+                <div class="panel-header">
+                  <span>Generated SQL</span>
+                  <span id="elapsed" class="meta"></span>
+                </div>
+                <pre id="sql-output" class="sql-block"></pre>
+              </div>
+
+              <div class="panel">
+                <div class="panel-header">
+                  <span>Results</span>
+                  <span id="row-count" class="meta"></span>
+                </div>
+                <div id="table-wrap" class="table-wrap"></div>
+              </div>
+            </div>
+
+            <aside class="result-side">
+              <div class="panel">
+                <div class="panel-header">Tables used <span class="meta">(semantic match)</span></div>
+                <div id="tables-used" class="tag-list"></div>
+              </div>
+              <div class="panel">
+                <div class="panel-header">Similar past queries</div>
+                <div id="similar-queries" class="similar-list"></div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCHEMA TAB -->
+      <section id="tab-schema" class="tab-panel">
+        <div id="schema-container" class="schema-grid"></div>
+      </section>
+
+      <!-- HISTORY TAB -->
+      <section id="tab-history" class="tab-panel">
+        <div id="history-container" class="history-list"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
